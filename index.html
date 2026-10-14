@@ -23,19 +23,19 @@
 :root{
   --bg:#F5F4FA; --surface:#FFFFFF; --ink:#24223A; --mute:#6E6B85; --line:#E3E1EE; --tint:#EDEBF6;
   --accent:#5B57C9; --accent-ink:#FFFFFF; --scrim:rgb(36 34 58/.32); --on-c:#1B1A28;
-  --rest:#7A77DD; --people:#E2707A; --self:#2E9C8F; --work:#D9962E; --home:#7FA35B; --other:#A6A3BA;
+  --rest:#7A77DD; --people:#E2707A; --self:#2E9C8F; --work:#D9962E; --home:#7FA35B; --other:#A6A3BA; --warn:#C8463D;
   --f-fear:#B39BE0; --f-anger:#E88B80; --f-sad:#86AEE6; --f-shame:#8FC49A; --f-joy:#EDCF62; --f-spark:#F2AA74;
   --font:"Figtree","Helvetica Neue",Arial,sans-serif;
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
   --bg:#14131F; --surface:#1E1D2D; --ink:#ECEBF5; --mute:#A09DB8; --line:#2E2C42; --tint:#28263A;
   --accent:#A9A6F7; --accent-ink:#14131F; --scrim:rgb(0 0 0/.5); --on-c:#14131F;
-  --rest:#9D9AF2; --people:#F2939A; --self:#5CC6B8; --work:#EDB65E; --home:#A4C67F; --other:#6F6C88;
+  --rest:#9D9AF2; --people:#F2939A; --self:#5CC6B8; --work:#EDB65E; --home:#A4C67F; --other:#6F6C88; --warn:#F08A80;
   --f-fear:#B9A1EA; --f-anger:#EE8E84; --f-sad:#88B0EA; --f-shame:#90C79B; --f-joy:#EBCB61; --f-spark:#F3AC78; color-scheme:dark}}
 :root[data-theme="dark"]{
   --bg:#14131F; --surface:#1E1D2D; --ink:#ECEBF5; --mute:#A09DB8; --line:#2E2C42; --tint:#28263A;
   --accent:#A9A6F7; --accent-ink:#14131F; --scrim:rgb(0 0 0/.5); --on-c:#14131F;
-  --rest:#9D9AF2; --people:#F2939A; --self:#5CC6B8; --work:#EDB65E; --home:#A4C67F; --other:#6F6C88;
+  --rest:#9D9AF2; --people:#F2939A; --self:#5CC6B8; --work:#EDB65E; --home:#A4C67F; --other:#6F6C88; --warn:#F08A80;
   --f-fear:#B9A1EA; --f-anger:#EE8E84; --f-sad:#88B0EA; --f-shame:#90C79B; --f-joy:#EBCB61; --f-spark:#F3AC78; color-scheme:dark}
 *{box-sizing:border-box}
 html,body{overscroll-behavior:none}
@@ -83,13 +83,35 @@ body{background:var(--bg);color:var(--ink);font:400 16px/24px var(--font);paddin
 .tgt .ibtn{width:40px;height:40px;background:var(--tint)}
 .tgt .ibtn svg{width:20px;height:20px}
 .tgt .v{text-align:center;font:700 14px/16px var(--font);font-variant-numeric:tabular-nums}
-.uw{display:grid;grid-template-columns:40px 48px 64px 48px 1fr;gap:8px;align-items:center;min-height:56px}
+.uw{display:grid;grid-template-columns:36px 40px 56px 40px minmax(0,1fr);gap:8px;align-items:center;min-height:56px}
+.uw .ibtn{width:40px;height:40px}
 .uw .v{text-align:center;font-weight:700;font-variant-numeric:tabular-nums}
-.uw input{min-height:40px;padding:4px 8px}
+.uw input{min-height:40px;padding:4px 8px;font-variant-numeric:tabular-nums}
+.uat{display:flex;align-items:center;gap:4px;min-width:0}
+.uat input{flex:1;min-width:0}
+.ibtn.sm{width:32px;height:32px}
+.ibtn.sm svg{width:16px;height:16px}
+.chip.any{min-height:40px;padding:0 12px;color:var(--mute);justify-self:start}
+.doing{display:flex;align-items:center;gap:8px;background:var(--tint);border-radius:16px;padding:8px 16px;font-weight:600}
+.doing svg{width:20px;height:20px;color:var(--pc);flex:none}
+.doing small{display:block;font:500 12px/16px var(--font);color:var(--mute)}
 .wsr{display:grid;grid-template-columns:48px 1fr 1fr;gap:8px;align-items:center;min-height:56px;border-bottom:1px solid var(--line)}
 .wsr input{min-height:40px;padding:4px 8px}
 .adj{display:grid;grid-template-columns:16px 1fr 48px 72px 48px;gap:8px;align-items:center;min-height:64px;border-bottom:1px solid var(--line)}
 .adj:last-child{border-bottom:0}
+.daybud{background:var(--surface);border-radius:24px;padding:16px;display:flex;flex-direction:column;gap:16px}
+.dstats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.dstats span{display:flex;flex-direction:column;min-width:0}
+.dstats b{font:700 20px/24px var(--font);font-variant-numeric:tabular-nums;white-space:nowrap}
+.dstats small{font:500 12px/16px var(--font);color:var(--mute)}
+.dstats .over b,.dstats .over small{color:var(--warn)}
+.dbar{position:relative;display:flex;height:16px;border-radius:8px;overflow:hidden;background:var(--tint)}
+.dbar i{display:block;height:100%;flex:none;box-shadow:inset -2px 0 0 var(--surface)}
+.dbar i.free{background:repeating-linear-gradient(135deg,var(--line) 0 2px,transparent 2px 8px)}
+.dbar .bed{position:absolute;top:0;bottom:0;width:3px;margin-left:-1px;background:var(--ink)}
+.dlab{position:relative;height:16px;font:500 12px/16px var(--font);color:var(--mute);font-variant-numeric:tabular-nums}
+.dlab span{position:absolute;top:0;white-space:nowrap}
+.daybud .note{margin:0}
 .adj.nd{grid-template-columns:1fr 48px 72px 48px}
 .pgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
 .ptile{display:flex;flex-direction:column;align-items:center;gap:8px;border:0;background:var(--surface);border-radius:24px;padding:16px 8px;min-width:0;min-height:136px;text-align:center;color:var(--ink)}
@@ -603,6 +625,10 @@ function upgrade(){
     });
     S.v=8;ch=true;
   }
+  if(S.v<9){
+    if(!S.ucats){var pk=function(ids){for(var i=0;i<ids.length;i++)if(byId(ids[i]))return ids[i];return ''};S.ucats=UCATS.filter(function(n){return S.unwind[n]}).map(function(n){return {n:n,plate:n==='Date night in'?pk(['partner']):n==='Move'?pk(['body']):pk(['mind'])}})}
+    S.v=9;ch=true;
+  }
   if(T&&!T.checks){
     (T.tasks||[]).forEach(function(t){if(!t.done)S.tasks.push({id:t.id||uid(),title:t.title,plate:t.plate||'',pr:t.pr||2,date:T.date})});
     T={date:T.date,done:{},checks:{},rdone:{}};ch=true;
@@ -783,7 +809,11 @@ function busy(){return typing()||D.phase==='anim'||SIT.run||!!document.querySele
 function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
 function byId(id){return S.plates.filter(function(p){return p.id===id})[0]}
 function fam(id){var p=byId(id);return id==='sleep'?'rest':p?(p.fam||FAM[id]||'other'):'other'}
-function col(id){return 'var(--'+fam(id)+')'}
+var CATCOL=['#4C8DD6','#B068C9','#D46A9F','#3FA3A3','#B58A3C','#7C86A2','#6E9F4B','#C9704A'];
+function cats(){if(!S.cats)S.cats=[];return S.cats}
+function catOf(k){return cats().filter(function(c){return c.k===k})[0]}
+function allCats(){return FAMS.map(function(f){return {k:f[0],n:f[1],c:'var(--'+f[0]+')'}}).concat(cats())}
+function col(id){var f=fam(id),c=catOf(f);return c?c.c:'var(--'+f+')'}
 function sname(id){var p=byId(id);if(!p)return '';return SHORT[id]&&p.name===DEFAULT_PLATES.filter(function(x){return x.id===id}).map(function(x){return x.name})[0]?SHORT[id]:p.name}
 function fmt(n){return (Math.round(n*2)/2).toString()}
 function hm(m){m=((m%1440)+1440)%1440;return pad(Math.floor(m/60))+':'+pad(m%60)}
@@ -1061,10 +1091,10 @@ function spinSVG(p,sp,tg,on,cls){
   var C=2*Math.PI*22,r=tg>0?Math.min(1,sp/tg):(sp>0?1:0),c=col(p.id);
   return '<svg class="pl'+(on?' spinning':'')+(cls?' '+cls:'')+'" viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="30" fill="var(--surface)" stroke="'+(on?c:'var(--line)')+'" stroke-width="2"/><circle cx="32" cy="32" r="22" fill="none" stroke="var(--tint)" stroke-width="8"/>'+(r>0?'<circle cx="32" cy="32" r="22" fill="none" stroke="'+c+'" stroke-width="8" stroke-linecap="round" stroke-dasharray="'+(C*r).toFixed(1)+' '+C.toFixed(1)+'" transform="rotate(-90 32 32)"/>':'')+'<circle cx="32" cy="32" r="12" fill="'+(on?c:'var(--tint)')+'"/></svg>';
 }
-function startSpin(id,quiet){
+function startSpin(id,quiet,doing){
   var c=curSpin(),pre='';
-  if(c){if(c.p===id){stopSpin();return}c.e=Date.now();pre='Stopped '+sname(c.p)+'. '}
-  spins().push({p:id,s:Date.now(),e:null});persist('t');render();window.scrollTo(0,0);if(!quiet)toast(pre+'Spinning '+sname(id));
+  if(c){if(c.p===id){if(doing){c.doing=doing;persist('t');render();return}stopSpin();return}c.e=Date.now();pre='Stopped '+sname(c.p)+'. '}
+  spins().push(doing?{p:id,s:Date.now(),e:null,doing:doing}:{p:id,s:Date.now(),e:null});persist('t');render();window.scrollTo(0,0);if(!quiet)toast(pre+'Spinning '+sname(id));
 }
 function stopSpin(){
   var c=curSpin();if(!c)return;
@@ -1074,10 +1104,15 @@ function stopSpin(){
   if(hit)celebrate(sname(id)+' spun for today',dur(tot)+' of '+dur(tg),false,IC.plates);else toast(sname(id)+': '+dur(tot)+' today');
 }
 function overLine(inPlan){
-  var aw=awakeLeft(),pl=platesLeft();
-  var h='<div class="strip"><span>'+IC.sun+dur(aw)+' awake left</span><span>'+dur(pl)+' still planned</span></div>';
-  if(pl>aw+5)h+='<p class="note">That’s '+dur(pl-aw)+' more than I have left today. '+(inPlan?'Take time off the least important plates first.':'Tap a plate to take time off it, or to add time I’ve already done.')+'</p>';
-  return h;
+  var aw=awakeLeft(),pl=platesLeft(),fr=aw-pl,ov=fr<-5,bed=wakeSleep()[1],mx=Math.max(aw,pl,1);
+  var h='<section class="daybud" aria-label="Time left today"><div class="dstats"><span><b>'+dur(aw)+'</b><small>until bed at '+bed+'</small></span><span><b>'+dur(pl)+'</b><small>still planned</small></span><span class="'+(ov?'over':'')+'"><b>'+dur(Math.abs(fr))+'</b><small>'+(ov?'more than I have':'free')+'</small></span></div><div class="dbar">';
+  orderToday().forEach(function(p){var l=Math.max(0,targetMin(p.id)-spunMin(p.id));if(l>=1)h+='<i style="width:'+(l/mx*100).toFixed(2)+'%;background:'+col(p.id)+'" title="'+esc(sname(p.id))+' '+dur(l)+'"></i>'});
+  if(fr>0)h+='<i class="free" style="width:'+(fr/mx*100).toFixed(2)+'%"></i>';
+  var bp=aw/mx*100;
+  if(ov)h+='<span class="bed" style="left:'+bp.toFixed(2)+'%"></span>';
+  h+='</div><div class="dlab"><span style="left:0">Now '+hm(nowM()%1440)+'</span>'+(ov?'<span style="'+(bp>70?'right:'+(100-bp).toFixed(2)+'%':'left:'+Math.max(bp,32).toFixed(2)+'%;transform:translateX(-50%)')+'">Bed '+bed+'</span>':'<span style="right:0">Bed '+bed+'</span>')+'</div>';
+  if(ov)h+='<p class="note">'+(inPlan?'Take time off the least important plates first.':'Tap a plate to take time off it, or to add time I’ve already done.')+'</p>';
+  return h+'</section>';
 }
 function adjustList(){
   var h='<div class="list">';
@@ -1098,14 +1133,14 @@ function plateRow(p,c){
 function activeCard(c){
   var p=byId(c.p)||{id:c.p,name:'',steps:[]},tg=targetMin(c.p),sp=spunMin(c.p),st=new Date(c.s);
   var h='<section class="spin" style="--pc:'+col(c.p)+'"><div class="hd" style="min-height:0"><span class="lbl">'+spinSVG(p,sp,tg,true,'mini')+'Spinning now</span><span class="mute small">since '+pad(st.getHours())+':'+pad(st.getMinutes())+'</span></div>';
-  h+='<div class="sname">'+esc(p.name)+'</div><div class="clock" id="spin-clock">'+clock(Date.now()-c.s)+'</div>';
+  h+='<div class="sname">'+esc(p.name)+'</div>'+(c.doing?'<div class="doing">'+IC.toward+'<span><small>Working on</small>'+esc(c.doing)+'</span></div>':'')+'<div class="clock" id="spin-clock">'+clock(Date.now()-c.s)+'</div>';
   h+='<div class="pbar"><i id="spin-bar" style="width:'+(tg?Math.min(100,sp/tg*100):100).toFixed(1)+'%"></i></div><p class="mute small" id="spin-tot">'+dur(sp)+(tg?' of '+dur(tg)+' today':' today')+'</p>';
   var steps=p.steps||[],todo=dueToday().filter(function(x){return x.plate===c.p&&!x.done});
   if(steps.length||todo.length){
     h+='<div class="list">';
     var open=steps.filter(function(s2){return !T.checks[p.id+'|'+s2]}),shown=showSteps?steps:open.slice(0,3),more=showSteps?0:steps.length-shown.length;
     shown.forEach(function(s2){var k=p.id+'|'+s2;h+='<button class="item" data-act="tick" data-k="'+esc(k)+'" aria-pressed="'+!!T.checks[k]+'"><span>'+esc(s2)+'</span></button>'});
-    if(more>0||showSteps)h+='<button class="link" data-act="showsteps" style="align-self:flex-start">'+(showSteps?'Show fewer':'All steps · '+(steps.length-open.length)+' of '+steps.length+' done')+'</button>';
+    if(more>0||showSteps)h+='<button class="link" data-act="showsteps" style="align-self:flex-start">'+(showSteps?'Show fewer':'Whole checklist · '+(steps.length-open.length)+' of '+steps.length+' done')+'</button>';
     h+=taskRows(todo)+'</div>';
   }
   return h+'<button class="btn pri wide" data-act="spin" data-id="'+c.p+'">Stop spinning</button></section>';
@@ -1265,11 +1300,12 @@ function renderSit(){
 function renderAnchor(){
   var s=AN.step,st=ANCHOR[s],h='<div class="page">'+backRow('','tool','menu')+'<div class="steps">';
   ANCHOR.forEach(function(x,i){h+='<i class="'+(i<=s?'on':'')+'"></i>'});
-  h+='</div><div class="still"><b>'+st[0]+'</b><span class="mute">'+st[1]+'</span>';
+  var cs1=curSpin(),last=s===ANCHOR.length-1;
+  h+='</div><div class="still"><b>'+st[0]+'</b><span class="mute">'+(last&&cs1?'I’m spinning '+esc(sname(cs1.p))+(cs1.doing?': '+esc(cs1.doing):'')+'. Give it my full attention.':st[1])+'</span>';
   if(s===2){var c=coreOf(AN.core);if(c)h+='<b style="margin-top:8px">Here’s '+c.n.toLowerCase()+'.</b>'}
   h+='</div>';
   if(s===2)h+='<div class="chips">'+CORES.map(function(c){return '<button class="chip f" style="--c:var('+c.c+')" data-act="ancore" data-v="'+c.k+'" aria-pressed="'+(AN.core===c.k)+'">'+c.n+'</button>'}).join('')+'</div>';
-  var nx='<button class="btn pri" data-act="annext">'+(s===ANCHOR.length-1?'I’m here':'Next')+'</button>';
+  var nx='<button class="btn pri" data-act="annext">'+(last?(cs1?'Back to '+esc(sname(cs1.p)):'I’m here'):'Next')+'</button>';
   return h+whyLink('anchor')+fab('<div class="row">'+(s>0?'<button class="btn" data-act="anback">Back</button>':'')+nx+'</div>')+'</div>';
 }
 function bubbles(items){
@@ -1313,21 +1349,26 @@ function renderStop(){
     h+=whyLink('open');f=back+'<button class="btn pri" data-act="next">Next</button>';
   }else{
     h+='<svg class="fork" viewBox="0 0 160 96" aria-hidden="true"><path d="M80 88V56"/><path d="M80 56L32 16"/><path class="'+(CP.action?'on':'')+'" d="M80 56L128 16"/><text x="24" y="10" text-anchor="middle">Away</text><text x="136" y="10" text-anchor="middle">Towards</text></svg>';
-    h+='<section class="sec tight"><h2>What matters here?</h2>'+plateChips(CP.plate,'cpplate',true)+(CP.plate?'<p class="note">'+esc(byId(CP.plate).value)+'</p>':'')+'</section>';
+    var cs0=curSpin();h+='<section class="sec tight"><h2>What matters here?</h2>'+(cs0?'<p class="mute small">Spinning now: '+esc(sname(cs0.p))+'. Pick a different plate to switch to it.</p>':'')+plateChips(CP.plate,'cpplate',true)+(CP.plate?'<p class="note">'+esc(byId(CP.plate).value)+'</p>':'')+'</section>';
     if(CP.showHelp)h+='<section class="sec tight"><h2>What could help me</h2>'+chipRow(HELPERS,'helper',CP.helpers)+'</section>';
     else h+='<button class="link" data-act="cptog" data-v="showHelp" style="align-self:flex-start">+ What could help me</button>';
     var acts=(CP.plate?['10 min: '+sname(CP.plate)]:[]).concat(S.actions);
     h+='<section class="sec tight"><h2>One small step I’ll take</h2>'+chipRow(acts,'act',[CP.action],'<button class="chip" data-act="ownact" aria-pressed="'+CP.ownAct+'">'+IC.plus+'My own</button>')+'</section>';
     if(CP.ownAct)h+='<div class="addr"><input type="text" id="own-act" placeholder="What will I do?"><button class="btn" data-act="addact">Add</button></div>';
-    if(CP.action)h+='<section class="sec tight"><h2>When?</h2>'+chipRow(['Now','Later today'],'cpwhen',[CP.when])+'</section>';
+    if(CP.action)h+='<section class="sec tight"><h2>When?</h2>'+chipRow(['Now','Later today'],'cpwhen',[CP.when])+'<p class="mute small">'+(CP.when==='Later today'?'It goes on today’s to-do list.':(CP.plate?'I’ll start spinning '+esc(sname(CP.plate))+' with this as what I’m working on.':'Pick a plate above to spin it now.'))+'</p></section>';
     h+='<button class="link" data-act="save" data-v="away" style="align-self:center">I got pulled off track this time</button>'+whyLink('act');
     f=back+'<button class="btn pri" data-act="save" data-v="toward"'+(CP.action?'':' disabled')+'>'+IC.toward+'I’ll do this</button>';
   }
   return h+fab(s===0?f:'<div class="row">'+f+'</div>')+'</div>';
 }
+function ucats(){if(!S.ucats||!S.ucats.length)S.ucats=[{n:'What I like',plate:''}];S.ucats.forEach(function(c){if(!S.unwind[c.n])S.unwind[c.n]=[]});return S.ucats}
+function ucatOf(n){return ucats().filter(function(c){return c.n===n})[0]}
 function renderUnwind(){
-  var c=UW.cat,list=S.unwind[c]||[],h='<div class="page">'+backRow('','tool','menu')+'<div class="sec tight"><h1>Unwind</h1><p class="mute">Things I like to relax with.</p></div>';
-  h+='<div class="chips line">'+UCATS.map(function(x){return '<button class="chip" data-act="ucat" data-v="'+esc(x)+'" aria-pressed="'+(c===x)+'">'+esc(x)+'</button>'}).join('')+'</div>';
+  if(!ucatOf(UW.cat))UW.cat=ucats()[0].n;
+  var c=UW.cat,uc=ucatOf(c),list=S.unwind[c]||[],h='<div class="page">'+backRow('','tool','menu')+'<div class="sec tight"><h1>Unwind</h1><p class="mute">Things I like to relax with. Tap one to do it now.</p></div>';
+  h+='<div class="chips line">'+ucats().map(function(x){return '<button class="chip" data-act="ucat" data-v="'+esc(x.n)+'" aria-pressed="'+(c===x.n)+'">'+(x.plate&&byId(x.plate)?'<i style="background:'+col(x.plate)+'"></i>':'')+esc(x.n)+'</button>'}).join('')+'<button class="chip" data-act="ucnew" aria-pressed="'+!!UW.adding+'" aria-label="New category">'+IC.plus+'New</button></div>';
+  if(UW.adding)h+='<div class="addr"><input type="text" id="uc-new" placeholder="Category name, like Weekend"><button class="btn" data-act="ucadd">Add</button></div>';
+  h+='<div class="hd" style="min-height:0"><span class="mute small">'+(uc.plate&&byId(uc.plate)?'Counts towards '+esc(sname(uc.plate)):'Not linked to a plate')+'</span><button class="link" data-act="ucedit" style="min-height:0;padding:0">Edit</button></div>';
   var note={'What I like':'My chill list and stress bucket taps.','Date night in':'An evening in, once the house is quiet.','Move':'Small doses count. Go gently with anything new.','2 min':'Includes mindfulness bells from my handout.'}[c];
   if(note)h+='<p class="note">'+note+'</p>';
   h+='<div class="ideas">'+list.map(function(t){return '<button class="idea" data-act="udo" data-v="'+esc(t)+'">'+esc(t)+'</button>'}).join('');
@@ -1443,7 +1484,7 @@ function renderSettings(){
   if(spage==='account')return renderAccount();
   if(spage==='move')return renderMove();
   var h='<div class="page">'+backRow('','settings-close')+'<h1>Settings</h1><div class="sec tight">';
-  [['days',IC.book,'My days','Gratitude and how each day went'],['plates',IC.plates,'Plates','Usual time, steps, priority'],['sleep',IC.sun,'Wake and bed','My usual times each day'],['feelings',IC.wheel,'Feelings','My emotion wheel'],['lists',IC.fork,'Thoughts and actions','Thoughts to loosen, things to do instead'],['science',IC.spark,'The science','Why each tool is here'],['account',IC.user,'Account','Sign out, import, back up']].forEach(function(r){
+  [['days',IC.book,'My days','Gratitude and how each day went'],['plates',IC.plates,'Plates','Usual time, checklist, category'],['sleep',IC.sun,'Wake and bed','My usual times each day'],['feelings',IC.wheel,'Feelings','My emotion wheel'],['lists',IC.fork,'Thoughts and actions','Thoughts to loosen, things to do instead'],['science',IC.spark,'The science','Why each tool is here'],['account',IC.user,'Account','Sign out, import, back up']].forEach(function(r){
     h+='<button class="srow" data-act="spage" data-v="'+r[0]+'"><span class="ic">'+r[1]+'</span><span><b>'+r[2]+'</b><small>'+r[3]+'</small></span>'+IC.chev+'</button>';
   });
   return h+'</div></div>';
@@ -1564,19 +1605,25 @@ function sheetBody(){
     h+='<button class="btn pri wide" data-act="pdspin" data-id="'+pp.id+'">'+(pon?'Stop spinning':'Start spinning')+'</button>';
     h+='<div class="list">'+ctlRow('Time today',ptg?(pu.min&&ptg!==pu.min?'Usually '+dur(pu.min):'As usual'):(pu.min?'Off today':'Not usually today'),'tgm','tgp',pp.id,ptg?dur(ptg):'Off',ptg===0,'time today for '+pp.name)+ctlRow('Already done','Done without the timer','lgm','lgp',pp.id,plg?dur(plg):'None',plg===0,'time already done on '+pp.name)+'</div>';
     var psteps=pp.steps||[],ptodo=dueToday().filter(function(x){return x.plate===pp.id&&!x.done});
-    if(psteps.length){h+='<section class="sec tight"><h2>Steps</h2><div class="list">';psteps.forEach(function(s2){var k2=pp.id+'|'+s2;h+='<button class="item" data-act="tick" data-k="'+esc(k2)+'" aria-pressed="'+!!T.checks[k2]+'"><span>'+esc(s2)+'</span></button>'});h+='</div></section>'}
+    if(psteps.length){h+='<section class="sec tight"><h2>Checklist</h2><div class="list">';psteps.forEach(function(s2){var k2=pp.id+'|'+s2;h+='<button class="item" data-act="tick" data-k="'+esc(k2)+'" aria-pressed="'+!!T.checks[k2]+'"><span>'+esc(s2)+'</span></button>'});h+='</div></section>'}
     h+='<section class="sec tight"><h2>To-dos</h2><div class="list">'+(ptodo.length?taskRows(ptodo):'<p class="mute small">Nothing due today.</p>')+'</div><button class="link" data-act="tnew" data-id="'+pp.id+'" style="align-self:flex-start;padding:0">+ Add a to-do</button></section>';
-    h+='<p class="mute small">'+(pu.at&&pu.min?'Usually '+dur(pu.min)+' from '+pu.at+' on '+WDL[dow()]+'s. ':'')+'<button class="link" data-act="pedit" data-id="'+pp.id+'" style="padding:0;min-height:0">Edit this plate</button></p>';
+    h+='<p class="mute small">'+(pu.min?'Usually '+dur(pu.min)+(pu.at?' from '+pu.at:', any time,')+' on '+WDL[dow()]+'s. ':'')+'<button class="link" data-act="pedit" data-id="'+pp.id+'" style="padding:0;min-height:0">Edit this plate</button></p>';
+  }else if(sheet.t==='ucat'){
+    var ucs=ucatOf(UW.cat);if(!ucs)return null;var uil=S.unwind[ucs.n]||[];
+    h+='<div class="sht">Unwind category</div><label>Name<input type="text" data-uf="name" value="'+esc(ucs.n)+'"></label>';
+    h+='<section class="sec tight"><h2>Counts towards</h2><p class="mute small">When I tap an idea here, this plate starts spinning with it as what I’m working on.</p>'+plateChips(ucs.plate,'ucplate',true,' ')+'</section>';
+    h+='<section class="sec tight"><h2>Ideas</h2>'+(uil.length?'<div class="chips">'+uil.map(function(x,i){return '<button class="chip x" data-act="uidel" data-i="'+i+'" aria-label="Remove '+esc(x)+'">'+esc(x)+IC.x+'</button>'}).join('')+'</div>':'<p class="mute small">No ideas yet. Add them on the Unwind page.</p>')+'</section>';
+    h+='<div class="sact">'+(ucats().length>1?'<button class="btn" data-act="ucdel">'+(sheet.sure?'Tap again to delete':'Delete category')+'</button>':'')+'<button class="btn pri" data-act="close">Done</button></div>';
   }else if(sheet.t==='adjust'){
     h+='<div class="sht">Today’s plates</div><p class="mute small">Time for each plate, today only.</p>'+overLine(true)+adjustList()+'<div class="acts split"><button class="btn" data-act="treset">Back to usual</button><button class="btn pri" data-act="close">Done</button></div>';
   }else if(sheet.t==='pedit'){
     var q=byId(sheet.id);if(!q)return null;
     h+='<label>Name<input type="text" data-pf="name" data-id="'+q.id+'" value="'+esc(q.name)+'"></label><label>What it’s for<input type="text" data-pf="value" data-id="'+q.id+'" value="'+esc(q.value||'')+'"></label>';
     if(q.id!=='sleep'){
-      h+='<div class="chips">'+FAMS.map(function(f){return '<button class="chip" data-act="pfam" data-v="'+f[0]+'" aria-pressed="'+(fam(q.id)===f[0])+'"><i style="background:var(--'+f[0]+')"></i>'+f[1]+'</button>'}).join('')+'</div>';
+      h+='<section class="sec tight"><h2>Category</h2><div class="chips">'+allCats().map(function(f){return '<button class="chip" data-act="pfam" data-v="'+f.k+'" aria-pressed="'+(fam(q.id)===f.k)+'"><i style="background:'+f.c+'"></i>'+esc(f.n)+'</button>'}).join('')+'<button class="chip" data-act="pcatnew" aria-pressed="'+!!sheet.newCat+'">'+IC.plus+'New category</button></div>'+(sheet.newCat?'<div class="addr"><input type="text" id="cat-new" placeholder="Category name, like Finance"><button class="btn" data-act="pcatadd">Add</button></div>':'')+'</section>';
       q.usual=q.usual||{};q.steps=q.steps||[];
-      h+='<section class="sec tight"><h2>Usual week</h2><div class="list">'+WORDER.map(function(d){var u=q.usual[d]||{min:0,at:''};return '<div class="uw"><b>'+WD[d]+'</b><button class="ibtn" data-act="um" data-v="'+d+'" aria-label="Less on '+WDL[d]+'"'+(u.min?'':' disabled')+'>'+IC.minus+'</button><span class="v">'+(u.min?dur(u.min):'Off')+'</span><button class="ibtn" data-act="uplus" data-v="'+d+'" aria-label="More on '+WDL[d]+'">'+IC.plus+'</button><input type="time" data-ua="'+d+'" value="'+esc(u.at||'')+'" aria-label="Usual start on '+WDL[d]+'"></div>'}).join('')+'</div><p class="mute small">Time on each day, and roughly when it starts.</p></section>';
-      h+='<section class="sec tight"><h2>Steps each time</h2><div class="chips">'+q.steps.map(function(x,i){return '<button class="chip x" data-act="psdel" data-i="'+i+'" aria-label="Remove '+esc(x)+'">'+esc(x)+IC.x+'</button>'}).join('')+'</div><div class="addr"><input type="text" id="ps-new" placeholder="Add a step"><button class="btn" data-act="psadd">Add</button></div></section>';
+      h+='<section class="sec tight"><h2>Usual week</h2><div class="list">'+WORDER.map(function(d){var u=q.usual[d]||{min:0,at:''};return '<div class="uw"><b>'+WD[d]+'</b><button class="ibtn" data-act="um" data-v="'+d+'" aria-label="Less on '+WDL[d]+'"'+(u.min?'':' disabled')+'>'+IC.minus+'</button><span class="v">'+(u.min?dur(u.min):'Off')+'</span><button class="ibtn" data-act="uplus" data-v="'+d+'" aria-label="More on '+WDL[d]+'">'+IC.plus+'</button>'+(!u.min?'<span></span>':u.at?'<span class="uat"><input type="time" data-ua="'+d+'" value="'+esc(u.at)+'" aria-label="Usual start on '+WDL[d]+'"><button class="ibtn ghost sm" data-act="uatx" data-v="'+d+'" aria-label="No set time on '+WDL[d]+'">'+IC.x+'</button></span>':'<button class="chip any" data-act="uat" data-v="'+d+'" aria-label="Set a start time on '+WDL[d]+'">Any time</button>')+'</div>'}).join('')+'</div><p class="mute small">How long I usually give it each day. Leave it as Any time if there’s no set time, or tap to add one.</p></section>';
+      h+='<section class="sec tight"><h2>Checklist</h2><p class="mute small">Little things to tick off whenever I spin this plate. They reset each day.</p><div class="chips">'+q.steps.map(function(x,i){return '<button class="chip x" data-act="psdel" data-i="'+i+'" aria-label="Remove '+esc(x)+'">'+esc(x)+IC.x+'</button>'}).join('')+'</div><div class="addr"><input type="text" id="ps-new" placeholder="Add an item, like Pack poo bags"><button class="btn" data-act="psadd">Add</button></div></section>';
       h+='<div class="acts split"><button class="btn" data-act="pdel" data-id="'+q.id+'">'+(sheet.sure?'Tap again':'Delete')+'</button><button class="btn pri" data-act="close">Done</button></div>';
     }else h+='<button class="btn pri wide" data-act="close">Done</button>';
   }else if(sheet.t==='rblock'){
@@ -1792,7 +1839,16 @@ case 'fnpadd':captureForm();var npn=val('np-name').trim();if(!npn){toast('Name t
     case 'aiok':applyAI();break;
     // unwind
     case 'ucat':UW.cat=v;UW.fresh=[];AI.err='';render();break;
-    case 'udo':logPractice('unwind');celebrate('Enjoy it',v,false,IC.heart);break;
+    case 'udo':logPractice('unwind');var uc1=ucatOf(UW.cat),upl=uc1&&uc1.plate&&byId(uc1.plate)?uc1.plate:'';
+  if(upl)startSpin(upl,true,v);else if(curSpin()){curSpin().doing=v;persist('t')}
+  if(upl||curSpin()){tool='menu';tab='now';render();window.scrollTo(0,0)}
+  celebrate('Enjoy it',v+(upl?' · spinning '+sname(upl):''),false,IC.heart);break;
+case 'ucnew':UW.adding=!UW.adding;render();var ucn=document.getElementById('uc-new');if(ucn)ucn.focus();break;
+case 'ucadd':var ucv=val('uc-new').trim();if(!ucv){toast('Name the category first');break}if(!ucatOf(ucv)){ucats().push({n:ucv,plate:''});S.unwind[ucv]=S.unwind[ucv]||[]}UW.cat=ucv;UW.adding=false;UW.fresh=[];persist('s');render();sheet={t:'ucat'};renderSheet();break;
+case 'ucedit':sheet={t:'ucat'};renderSheet();break;
+case 'ucplate':var uc2=ucatOf(UW.cat);uc2.plate=uc2.plate===id?'':id;persist('s');render();break;
+case 'uidel':var ul=S.unwind[UW.cat];ul.splice(parseInt(b.getAttribute('data-i'),10),1);persist('s');render();break;
+case 'ucdel':if(!sheet.sure){sheet.sure=true;renderSheet();break}S.ucats=ucats().filter(function(x){return x.n!==UW.cat});delete S.unwind[UW.cat];UW.cat=ucats()[0].n;sheet=null;persist('s');render();toast('Category deleted');break;
     case 'ukeep':S.unwind[UW.cat].push(v);UW.fresh=UW.fresh.filter(function(z){return z!==v});persist('s');render();break;
     case 'uadd':var uv=val('u-new');if(uv){S.unwind[UW.cat].push(uv);persist('s');render()}break;
     case 'umore':aiUnwind();break;
@@ -1808,7 +1864,11 @@ case 'fnpadd':captureForm();var npn=val('np-name').trim();if(!npn){toast('Name t
     // settings: plates
     case 'pedit':sheet={t:'pedit',id:id};renderSheet();break;
     case 'pfam':byId(sheet.id).fam=v;persist('s');render();break;
-    case 'um':case 'uplus':var uq=byId(sheet.id),ud=parseInt(v,10);uq.usual=uq.usual||{};var uu=uq.usual[ud]=uq.usual[ud]||{min:0,at:''};uu.min=a==='uplus'?uu.min+15:Math.max(0,uu.min-15);persist('s');render();break;
+case 'pcatnew':sheet.newCat=!sheet.newCat;renderSheet();var cn=document.getElementById('cat-new');if(cn)cn.focus();break;
+case 'pcatadd':var cnm=val('cat-new').trim();if(!cnm){toast('Name the category first');break}var ex=allCats().filter(function(c){return c.n.toLowerCase()===cnm.toLowerCase()})[0];if(!ex){ex={k:'c'+uid(),n:cnm,c:CATCOL[cats().length%CATCOL.length]};cats().push(ex)}byId(sheet.id).fam=ex.k;sheet.newCat=false;persist('s');render();break;
+    case 'uat':var aq=byId(sheet.id),ad=parseInt(v,10),au=aq.usual[ad];var oth=WORDER.map(function(x){return (aq.usual[x]||{}).at}).filter(Boolean)[0];au.at=oth||'09:00';persist('s');render();var ai=document.querySelector('[data-ua="'+ad+'"]');if(ai)ai.focus();break;
+case 'uatx':var xq=byId(sheet.id);xq.usual[parseInt(v,10)].at='';persist('s');render();break;
+case 'um':case 'uplus':var uq=byId(sheet.id),ud=parseInt(v,10);uq.usual=uq.usual||{};var uu=uq.usual[ud]=uq.usual[ud]||{min:0,at:''};uu.min=a==='uplus'?uu.min+15:Math.max(0,uu.min-15);persist('s');render();break;
     case 'psadd':var ps=val('ps-new');if(ps){var pq=byId(sheet.id);pq.steps=pq.steps||[];if(pq.steps.indexOf(ps)<0)pq.steps.push(ps);persist('s');render();var pn=document.getElementById('ps-new');if(pn)pn.focus()}break;
     case 'psdel':byId(sheet.id).steps.splice(parseInt(b.getAttribute('data-i'),10),1);persist('s');render();break;
     case 'bp':case 'bm':var p2=byId(id),fl=b.getAttribute('data-f'),d1=a==='bp'?1:-1;p2[fl]=Math.max(0,p2[fl]+d1);if(fl==='floor')p2.floor=Math.min(p2.floor,p2.base);if(fl==='base'){if(p2.floor>p2.base)p2.floor=p2.base;if(d1>0&&!p2.down)raise(id,1);else if(!p2.down&&p2.hours>p2.base)p2.hours=p2.base}persist('s');render();break;
@@ -1857,7 +1917,7 @@ case 'fnpadd':captureForm();var npn=val('np-name').trim();if(!npn){toast('Name t
     case 'helper':var hl=CP.helpers.indexOf(v);if(hl>-1)CP.helpers.splice(hl,1);else CP.helpers.push(v);render();break;
     case 'cpwhen':CP.when=v;render();break;
     case 'ancore':AN.core=AN.core===v?'':v;render();break;
-    case 'annext':if(AN.step<ANCHOR.length-1){AN.step++;render()}else{logPractice('anchor');tool='menu';render();celebrate('Anchored','Back in the room, here and now.',true,IC.anchor)}break;
+    case 'annext':if(AN.step<ANCHOR.length-1){AN.step++;render()}else{logPractice('anchor');tool='menu';if(curSpin())tab='now';render();window.scrollTo(0,0);celebrate('Anchored','Back in the room, here and now.',true,IC.anchor)}break;
     case 'anback':AN.step=Math.max(0,AN.step-1);render();break;
     case 'why':sheet={t:'why',k:v};renderSheet();break;
     case 'feel':var fi2=CP.feelings.indexOf(v);if(fi2>-1)CP.feelings.splice(fi2,1);else CP.feelings.push(v);render();break;
@@ -1869,17 +1929,20 @@ case 'fnpadd':captureForm();var npn=val('np-name').trim();if(!npn){toast('Name t
     case 'act':CP.action=CP.action===v?'':v;render();break;
     case 'ownact':CP.ownAct=!CP.ownAct;render();var oa=document.getElementById('own-act');if(oa)oa.focus();break;
     case 'addact':var na=val('own-act');if(na){if(S.actions.indexOf(na)<0){S.actions.unshift(na);persist('s')}CP.action=na;CP.ownAct=false;render()}break;
-    case 'next':CP.step=Math.min(3,CP.step+1);render();window.scrollTo(0,0);break;
+    case 'next':CP.step=Math.min(3,CP.step+1);if(CP.step===3&&!CP.plate&&curSpin())CP.plate=curSpin().p;render();window.scrollTo(0,0);break;
     case 'back':CP.step=Math.max(0,CP.step-1);render();break;
     case 'save':
       var feels=CP.feelings.length?CP.feelings.slice():(CP.core?[coreOf(CP.core).n]:[]),tw=v==='toward',i0=CP.int,i1=CP.after,act=CP.action,later=tw&&CP.when==='Later today';
       J.entries.push({id:'e'+Date.now(),t:Date.now(),feelings:feels,int:i0,after:i1,body:CP.body.slice(),habits:CP.habits.slice(),helpers:CP.helpers.slice(),plate:CP.plate,chose:tw?'toward':'away',next:tw?act:'',when:tw?CP.when:''});
       if(J.entries.length>150)J.entries=J.entries.slice(-150);
-      if(later){var mm=dayModel(),nx2=mm.segs.filter(function(x){return x.s>mm.now})[0];S.tasks.push({id:uid(),title:act,plate:CP.plate,pr:2,date:iso(),block:nx2?nx2.b.name:'',note:'Towards move'});persist('s')}
+      var pl0=CP.plate,spun0='';
+      if(later){S.tasks.push({id:uid(),title:act,plate:pl0,pr:2,date:iso(),note:'From a choice point'});persist('s')}
+      else if(tw&&pl0){startSpin(pl0,true,act);spun0=sname(pl0)}
+      else if(tw&&curSpin()){curSpin().doing=act;persist('t');spun0=sname(curSpin().p)}
       persist('j');logPractice('cp',tw?'toward':'away');
-      CP=blankCP();tool='menu';render();window.scrollTo(0,0);
+      CP=blankCP();tool='menu';if(tw)tab='now';render();window.scrollTo(0,0);
       var chg=(i0!=null&&i1!=null&&i1!==i0)?' · '+i0+'% → '+i1+'%':'';
-      celebrate(tw?'Towards':'Noticed',tw?act+(later?' · on today’s list':'')+chg:'Noticing the hook is the first step.'+chg,!tw,tw?IC.toward:IC.sit);
+      celebrate(tw?'Towards':'Noticed',tw?act+(later?' · on today’s list':spun0?' · spinning '+spun0:'')+chg:'Noticing the hook is the first step.'+chg,!tw,tw?IC.toward:IC.sit);
       break;
   }
 });
@@ -1913,6 +1976,8 @@ document.addEventListener('keydown',function(ev){
 });
 document.addEventListener('change',function(ev){
   var el=ev.target,tw0=el.getAttribute('data-tw'),ua=el.getAttribute('data-ua'),wsf=el.getAttribute('data-ws');
+  var uf=el.getAttribute('data-uf');
+  if(uf&&sheet&&sheet.t==='ucat'){var nn=el.value.trim(),uc3=ucatOf(UW.cat);if(nn&&uc3&&nn!==uc3.n&&!ucatOf(nn)){S.unwind[nn]=S.unwind[uc3.n]||[];delete S.unwind[uc3.n];uc3.n=nn;UW.cat=nn;persist('s');document.getElementById('view').innerHTML=viewHTML()}return}
   if(ua!=null&&sheet&&sheet.t==='pedit'){var uq=byId(sheet.id);uq.usual=uq.usual||{};var uu=uq.usual[ua]=uq.usual[ua]||{min:0,at:''};uu.at=el.value;persist('s');return}
   if(wsf&&el.value){S.ws=S.ws||{};var wd=el.getAttribute('data-d');S.ws[wd]=S.ws[wd]||{wake:'06:00',sleep:'22:00'};S.ws[wd][wsf]=el.value;persist('s');toast('Saved');return}
   if(tw0&&el.value){T[tw0]=el.value;persist('t');render();return}
