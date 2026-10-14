@@ -118,6 +118,19 @@ body{background:var(--bg);color:var(--ink);font:400 16px/24px var(--font);paddin
 .ptile svg{width:56px;height:56px;flex:none}
 .ptile b{font:600 14px/16px var(--font);max-width:100%;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow-wrap:anywhere}
 .ptile small{font:500 12px/16px var(--font);color:var(--mute);font-variant-numeric:tabular-nums}
+.ptile .when{margin-top:-8px}
+.dhead{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
+.dhead b{font:700 32px/40px var(--font);font-variant-numeric:tabular-nums}
+.dhead small{font:500 14px/24px var(--font);color:var(--mute)}
+.dleg{display:flex;flex-wrap:wrap;gap:8px 16px;font:500 14px/24px var(--font);color:var(--mute)}
+.dleg span{display:inline-flex;align-items:center;gap:8px}
+.dleg i{width:16px;height:16px;border-radius:4px;display:block;background:var(--accent)}
+.dleg i.free{background:repeating-linear-gradient(135deg,var(--line) 0 2px,var(--tint) 2px 8px)}
+.dleg b{color:var(--ink);font-weight:700}
+.dleg .over b{color:var(--warn)}
+.ordr{display:grid;grid-template-columns:16px 1fr 48px 48px;gap:8px;align-items:center;min-height:56px;border-bottom:1px solid var(--line)}
+.ordr:last-child{border-bottom:0}
+.ordr span{font-weight:600}
 .ptile.on{box-shadow:inset 0 0 0 2px var(--pc)}
 .ptile.dn{background:transparent;box-shadow:inset 0 0 0 2px var(--line)}
 .ptile.dn b{color:var(--mute)}
@@ -1020,7 +1033,7 @@ function wheel(sel,act,count){
   return s+'<circle cx="120" cy="120" r="36" fill="var(--surface)"/><text class="wc" x="120" y="124" text-anchor="middle">'+(count?count+' picked':'Tap')+'</text></svg>';
 }
 function coreOf(k){return CORES.filter(function(c){return c.k===k})[0]}
-function plateChips(sel,act,skipSleep,extra){return '<div class="chips'+(extra?'':' line')+'">'+S.plates.filter(function(p){return !skipSleep||p.id!=='sleep'}).map(function(p){return '<button class="chip" data-act="'+act+'" data-id="'+p.id+'" aria-pressed="'+(sel===p.id)+'"><i style="background:'+col(p.id)+'"></i>'+esc(sname(p.id))+'</button>'}).join('')+(extra||'')+'</div>'}
+function plateChips(sel,act,skipSleep,extra,none){return '<div class="chips'+(extra?'':' line')+'">'+(none?'<button class="chip" data-act="'+act+'" data-id="" aria-pressed="'+!sel+'">'+none+'</button>':'')+S.plates.filter(function(p){return !skipSleep||p.id!=='sleep'}).map(function(p){return '<button class="chip" data-act="'+act+'" data-id="'+p.id+'" aria-pressed="'+(sel===p.id)+'"><i style="background:'+col(p.id)+'"></i>'+esc(sname(p.id))+'</button>'}).join('')+(extra||'')+'</div>'}
 
 /* ---------- now ---------- */
 function ringHTML(m){
@@ -1104,14 +1117,16 @@ function stopSpin(){
   if(hit)celebrate(sname(id)+' spun for today',dur(tot)+' of '+dur(tg),false,IC.plates);else toast(sname(id)+': '+dur(tot)+' today');
 }
 function overLine(inPlan){
-  var aw=awakeLeft(),pl=platesLeft(),fr=aw-pl,ov=fr<-5,bed=wakeSleep()[1],mx=Math.max(aw,pl,1);
-  var h='<section class="daybud" aria-label="Time left today"><div class="dstats"><span><b>'+dur(aw)+'</b><small>until bed at '+bed+'</small></span><span><b>'+dur(pl)+'</b><small>still planned</small></span><span class="'+(ov?'over':'')+'"><b>'+dur(Math.abs(fr))+'</b><small>'+(ov?'more than I have':'free')+'</small></span></div><div class="dbar">';
-  orderToday().forEach(function(p){var l=Math.max(0,targetMin(p.id)-spunMin(p.id));if(l>=1)h+='<i style="width:'+(l/mx*100).toFixed(2)+'%;background:'+col(p.id)+'" title="'+esc(sname(p.id))+' '+dur(l)+'"></i>'});
+  var aw=awakeLeft(),pl=platesLeft(),fr=aw-pl,ov=fr<-5,bed=wakeSleep()[1],mx=Math.max(aw,pl,1),lo=ov?lowestUp():null;
+  var h='<section class="daybud" aria-label="Time left today"><div class="dhead"><span><b>'+dur(aw)+'</b></span><small>until bed at '+bed+'</small></div><div class="dbar" aria-hidden="true">';
+  orderToday().forEach(function(p){var l=Math.max(0,targetMin(p.id)-spunMin(p.id));if(l>=1)h+='<i style="width:'+(l/mx*100).toFixed(2)+'%;background:'+col(p.id)+'"></i>'});
   if(fr>0)h+='<i class="free" style="width:'+(fr/mx*100).toFixed(2)+'%"></i>';
-  var bp=aw/mx*100;
-  if(ov)h+='<span class="bed" style="left:'+bp.toFixed(2)+'%"></span>';
-  h+='</div><div class="dlab"><span style="left:0">Now '+hm(nowM()%1440)+'</span>'+(ov?'<span style="'+(bp>70?'right:'+(100-bp).toFixed(2)+'%':'left:'+Math.max(bp,32).toFixed(2)+'%;transform:translateX(-50%)')+'">Bed '+bed+'</span>':'<span style="right:0">Bed '+bed+'</span>')+'</div>';
-  if(ov)h+='<p class="note">'+(inPlan?'Take time off the least important plates first.':'Tap a plate to take time off it, or to add time I’ve already done.')+'</p>';
+  if(ov)h+='<span class="bed" style="left:'+(aw/mx*100).toFixed(2)+'%"></span>';
+  h+='</div><div class="dleg"><span><i style="background:linear-gradient(90deg,var(--people),var(--self),var(--work))"></i>Plates still to do <b>'+dur(pl)+'</b></span>'+(ov?'<span class="over"><i style="background:var(--warn)"></i>Too much by <b>'+dur(-fr)+'</b></span>':'<span><i class="free"></i>Spare time <b>'+dur(Math.max(0,fr))+'</b></span>')+'</div>';
+  if(ov){
+    h+='<p class="note">'+(inPlan?'Take time off the least important plates, or put one down for today.':'Put the least important plate down for today, or tap a plate to add time I’ve already done.')+'</p>';
+    if(lo)h+='<button class="btn wide" data-act="pdown" data-id="'+lo.id+'">Put '+esc(sname(lo.id))+' down for today</button>';
+  }
   return h+'</section>';
 }
 function adjustList(){
@@ -1124,7 +1139,8 @@ function adjustList(){
 }
 function hintPlate(){var n=nowM(),best=null;dayPlates().forEach(function(p){var u=usualOf(p.id);if(!u.min||!u.at)return;var a=mins(u.at);if(a<=n&&spunMin(p.id)<targetMin(p.id)&&(!best||a>best.a))best={p:p,a:a}});return best}
 function firstUp(){var hp=hintPlate();if(hp)return hp.p;return orderToday().filter(function(p){return targetMin(p.id)>spunMin(p.id)})[0]||null}
-function orderToday(){return dayPlates().map(function(p,i){var u=usualOf(p.id);return {p:p,a:u.at&&u.min?mins(u.at):9999,i:i}}).sort(function(x,y){return (x.a-y.a)||(x.i-y.i)}).map(function(o){return o.p})}
+function orderToday(){var ps=dayPlates(),o=T.order||[];if(!o.length)return ps;return ps.map(function(p,i){var k=o.indexOf(p.id);return {p:p,k:k<0?999+i:k}}).sort(function(x,y){return x.k-y.k}).map(function(x){return x.p})}
+function lowestUp(){var l=orderToday().filter(function(p){return targetMin(p.id)-spunMin(p.id)>=1});return l[l.length-1]||null}
 function plateRow(p,c){
   var tg=targetMin(p.id),sp=spunMin(p.id),on=!!(c&&c.p===p.id),u=usualOf(p.id),dn=tg===0;
   var pc=tg?Math.min(100,sp/tg*100):(sp>0?100:0);
@@ -1161,7 +1177,7 @@ function doneList(){
 function tileSub(id,on){var tg=targetMin(id),sp=spunMin(id);return on?'Spinning · '+dur(sp):tg?dur(sp)+' of '+dur(tg):(sp>=1?dur(sp)+' done':'Not today')}
 function plateTile(p,c){
   var tg=targetMin(p.id),sp=spunMin(p.id),on=!!(c&&c.p===p.id);
-  return '<button class="ptile'+(on?' on':'')+(tg===0&&sp<1?' dn':'')+'" style="--pc:'+col(p.id)+'" data-act="pday" data-id="'+p.id+'">'+spinSVG(p,sp,tg,on)+'<b>'+esc(sname(p.id))+'</b><small'+(on?' data-live="1"':'')+'>'+tileSub(p.id,on)+'</small></button>';
+  return '<button class="ptile'+(on?' on':'')+(tg===0&&sp<1?' dn':'')+'" style="--pc:'+col(p.id)+'" data-act="pday" data-id="'+p.id+'">'+spinSVG(p,sp,tg,on)+'<b>'+esc(sname(p.id))+'</b><small'+(on?' data-live="1"':'')+'>'+tileSub(p.id,on)+'</small>'+(function(){var u=usualOf(p.id);return u.at&&u.min?'<small class="when">Usually '+u.at+'</small>':''})()+'</button>';
 }
 function renderNow(){
   if(planOpen)return renderPlan();
@@ -1171,11 +1187,10 @@ function renderNow(){
   if(c)h+=activeCard(c);
   else{
     h+='<section class="sec tight"><h1>Which plate now?</h1><p class="mute">Tap a plate to start giving it my time.</p></section>';
-    var hp=hintPlate();if(hp)h+='<button class="hint" data-act="pday" data-id="'+hp.p.id+'"><i class="dot" style="background:'+col(hp.p.id)+'"></i><span><small>Usually around now</small><b>'+esc(sname(hp.p.id))+'</b></span>'+IC.chev+'</button>';
   }
   h+=overLine();
   var list=orderToday(),on=list.filter(function(p){return targetMin(p.id)>0||spunMin(p.id)>=1}),off=list.filter(function(p){return on.indexOf(p)<0});
-  h+='<section class="sec tight"><h2>Today</h2><div class="pgrid">'+on.map(function(p){return plateTile(p,c)}).join('')+'</div></section>';
+  h+='<section class="sec tight"><div class="hd" style="min-height:0"><h2>Today · most important first</h2><button class="link" data-act="order" style="min-height:0;padding:0">Reorder</button></div><div class="pgrid">'+on.map(function(p){return plateTile(p,c)}).join('')+'</div></section>';
   if(off.length)h+='<section class="sec tight"><button class="link" data-act="showoff" style="align-self:flex-start;padding:0">'+(showOff?'Hide plates not planned today':'Not planned today · '+off.length)+'</button>'+(showOff?'<div class="pgrid">'+off.map(function(p){return plateTile(p,c)}).join('')+'</div>':'')+'</section>';
   return h+'</div>';
 }
@@ -1602,7 +1617,7 @@ function sheetBody(){
     var cc=curSpin(),pon=!!(cc&&cc.p===pp.id),ptg=targetMin(pp.id),psp=spunMin(pp.id),plg=logged(pp.id),pu=usualOf(pp.id);
     h+='<div class="shd" style="--pc:'+col(pp.id)+'">'+spinSVG(pp,psp,ptg,pon)+'<div><b>'+esc(pp.name)+'</b>'+(pp.value?'<span class="mute small">'+esc(pp.value)+'</span>':'')+'</div></div>';
     h+='<div class="sec tight" style="--pc:'+col(pp.id)+'"><div class="pbar"><i'+(pon?' id="pd-bar"':'')+' style="width:'+(ptg?Math.min(100,psp/ptg*100):(psp>0?100:0)).toFixed(1)+'%"></i></div><p class="mute small"'+(pon?' id="pd-tot"':'')+'>'+dur(psp)+(ptg?' of '+dur(ptg)+' today':' today')+'</p></div>';
-    h+='<button class="btn pri wide" data-act="pdspin" data-id="'+pp.id+'">'+(pon?'Stop spinning':'Start spinning')+'</button>';
+    h+='<button class="btn pri wide" data-act="pdspin" data-id="'+pp.id+'">'+(pon?'Stop spinning':'Start spinning')+'</button>'+(ptg>0?'<button class="btn wide" data-act="pdown" data-id="'+pp.id+'">Put it down for today</button>':(pu.min?'<button class="btn wide" data-act="pup" data-id="'+pp.id+'">Pick it back up today</button>':''));
     h+='<div class="list">'+ctlRow('Time today',ptg?(pu.min&&ptg!==pu.min?'Usually '+dur(pu.min):'As usual'):(pu.min?'Off today':'Not usually today'),'tgm','tgp',pp.id,ptg?dur(ptg):'Off',ptg===0,'time today for '+pp.name)+ctlRow('Already done','Done without the timer','lgm','lgp',pp.id,plg?dur(plg):'None',plg===0,'time already done on '+pp.name)+'</div>';
     var psteps=pp.steps||[],ptodo=dueToday().filter(function(x){return x.plate===pp.id&&!x.done});
     if(psteps.length){h+='<section class="sec tight"><h2>Checklist</h2><div class="list">';psteps.forEach(function(s2){var k2=pp.id+'|'+s2;h+='<button class="item" data-act="tick" data-k="'+esc(k2)+'" aria-pressed="'+!!T.checks[k2]+'"><span>'+esc(s2)+'</span></button>'});h+='</div></section>'}
@@ -1614,6 +1629,11 @@ function sheetBody(){
     h+='<section class="sec tight"><h2>Counts towards</h2><p class="mute small">When I tap an idea here, this plate starts spinning with it as what I’m working on.</p>'+plateChips(ucs.plate,'ucplate',true,' ')+'</section>';
     h+='<section class="sec tight"><h2>Ideas</h2>'+(uil.length?'<div class="chips">'+uil.map(function(x,i){return '<button class="chip x" data-act="uidel" data-i="'+i+'" aria-label="Remove '+esc(x)+'">'+esc(x)+IC.x+'</button>'}).join('')+'</div>':'<p class="mute small">No ideas yet. Add them on the Unwind page.</p>')+'</section>';
     h+='<div class="sact">'+(ucats().length>1?'<button class="btn" data-act="ucdel">'+(sheet.sure?'Tap again to delete':'Delete category')+'</button>':'')+'<button class="btn pri" data-act="close">Done</button></div>';
+  }else if(sheet.t==='order'){
+    var ol=orderToday();
+    h+='<div class="sht">Today’s order</div><p class="mute small">Most important first. When the day is too full, the bottom ones go down first. This changes today only.</p><div class="list">';
+    ol.forEach(function(p,i){h+='<div class="ordr"><i class="dot" style="background:'+col(p.id)+'"></i><span>'+esc(sname(p.id))+'</span><button class="ibtn" data-act="omv" data-id="'+p.id+'" data-v="-1" aria-label="Move '+esc(p.name)+' up"'+(i?'':' disabled')+'>'+IC.up+'</button><button class="ibtn" data-act="omv" data-id="'+p.id+'" data-v="1" aria-label="Move '+esc(p.name)+' down"'+(i<ol.length-1?'':' disabled')+'>'+IC.down+'</button></div>'});
+    h+='</div><div class="sact">'+(T.order&&T.order.length?'<button class="btn" data-act="oreset">Usual order</button>':'')+'<button class="btn pri" data-act="close">Done</button></div><p class="mute small">To change the usual order, go to Settings → Plates.</p>';
   }else if(sheet.t==='adjust'){
     h+='<div class="sht">Today’s plates</div><p class="mute small">Time for each plate, today only.</p>'+overLine(true)+adjustList()+'<div class="acts split"><button class="btn" data-act="treset">Back to usual</button><button class="btn pri" data-act="close">Done</button></div>';
   }else if(sheet.t==='pedit'){
@@ -1679,7 +1699,7 @@ function sheetBody(){
     }
     if(AI.err&&!AI.busy)h+='<p class="note">'+esc(AI.err)+'</p>';
     h+='<section class="sec tight"><h2>Priority</h2><div class="chips">'+[1,2,3].map(function(n){return '<button class="chip" data-act="fpr" data-v="'+n+'" aria-pressed="'+(f.pr===n)+'">'+PRN[n]+'</button>'}).join('')+'</div></section>';
-    h+='<section class="sec tight"><h2>Plate</h2>'+plateChips(f.plate,'fplate',true,'<button class="chip" data-act="fnewp" aria-pressed="'+!!sheet.newPlate+'">'+IC.plus+'New plate</button>')+(sheet.newPlate?'<div class="addr"><input type="text" id="np-name" placeholder="Plate name, like Health"><button class="btn" data-act="fnpadd">Add</button></div>':'')+'</section>';
+    h+='<section class="sec tight"><h2>Plate</h2><p class="mute small">Optional. Pick one if it belongs to a plate, so it shows up when I spin it.</p>'+plateChips(f.plate,'fplate',true,'<button class="chip" data-act="fnewp" aria-pressed="'+!!sheet.newPlate+'">'+IC.plus+'New plate</button>','No plate')+(sheet.newPlate?'<div class="addr"><input type="text" id="np-name" placeholder="Plate name, like Health"><button class="btn" data-act="fnpadd">Add</button></div>':'')+'</section>';
     h+=(tg&&tg.kind==='r'&&sheet.k?'<p class="mute small">Changes below apply every time.</p>':'');
     var rk=!f.rule?'once':f.rule.t==='w'?(f.rule.days.length===7?'daily':'weekly'):f.rule.t==='m'?'monthly':f.rule.t==='y'?'yearly':'special';
     h+='<h2>Repeat</h2><div class="chips">'+[['once','Once'],['daily','Every day'],['weekly','Weekly'],['monthly','Monthly'],['yearly','Yearly']].map(function(o){return '<button class="chip" data-act="frep" data-v="'+o[0]+'" aria-pressed="'+(rk===o[0])+'">'+o[1]+'</button>'}).join('')+(rk==='special'?'<span class="chip" aria-pressed="true" style="background:var(--accent);color:var(--accent-ink);border-color:var(--accent)">'+esc(repLabel({rule:f.rule}))+'</span>':'')+'</div>';
@@ -1768,6 +1788,11 @@ document.addEventListener('click',function(ev){
   switch(a){
     case 'spin':startSpin(id);break;
 case 'pday':sheet={t:'pday',id:id};renderSheet();break;
+case 'pdown':T.targets=T.targets||{};T.targets[id]=0;var cd=curSpin();if(cd&&cd.p===id){cd.e=Date.now()}persist('t');if(sheet&&sheet.t==='pday')sheet=null;render();toast(sname(id)+' is down for today. It won’t smash.');break;
+case 'pup':if(T.targets)delete T.targets[id];persist('t');render();toast(sname(id)+' is back up today');break;
+case 'order':sheet={t:'order'};renderSheet();break;
+case 'omv':var ol2=orderToday().map(function(x){return x.id}),oi=ol2.indexOf(id),oj=oi+parseInt(v,10);if(oi>-1&&oj>=0&&oj<ol2.length){ol2.splice(oi,1);ol2.splice(oj,0,id);T.order=ol2;persist('t');render()}break;
+case 'oreset':T.order=[];persist('t');render();break;
 case 'pdspin':sheet=null;startSpin(id);break;
 case 'lgm':case 'lgp':T.logged=T.logged||{};var lv=logged(id);T.logged[id]=a==='lgp'?lv+15:Math.max(0,lv-15);if(!T.logged[id])delete T.logged[id];persist('t');render();break;
     case 'adjust':sheet={t:'adjust'};renderSheet();break;
